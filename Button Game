@@ -1,0 +1,159 @@
+import time as TIMY
+from threading import Timer
+import tkinter as TPSK
+import random as RNG
+from decimal import Decimal
+
+root = TPSK.Tk()
+
+#turning all the picture I need for this game into files that I can use
+B_Button_Empty = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Empty.Gif")
+B_Button_Reg = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Reg.Gif")
+B_Button_Reg_D = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Reg_D.Gif")
+B_Button_Inverse = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Inverse.Gif")
+B_Button_Inverse_D = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Inverse_D.Gif")
+B_Button_3 = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_3.Gif")
+B_Button_2 = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_2.Gif")
+B_Button_1 = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_1.Gif")
+B_Button_Go = TPSK.PhotoImage(file=R"C:\Users\Taylo\OneDrive\Documents\Visual Studio 2022\Pictures\B_Button_Go.Gif")
+
+#quick commands that I can reference to change the main button to different pictures
+def CngButtonReg(none):
+    LabelTest1.configure(image=B_Button_Reg)
+    VarOnOff = 1
+    return VarOnOff
+def CngButtonRegD(none):
+    LabelTest1.configure(image=B_Button_Reg_D)
+def CngButtonInv(none):
+    LabelTest1.configure(image=B_Button_Inverse)
+    VarOnOff = -1
+    return VarOnOff
+def CngButtonInvD(none):
+    LabelTest1.configure(image=B_Button_Inverse_D)
+def CngButton3():
+    LabelTest1.configure(image=B_Button_3)
+def CngButton2():
+    LabelTest1.configure(image=B_Button_2)
+def CngButton1():
+    LabelTest1.configure(image=B_Button_1)
+def CngButtonGo():
+    LabelTest1.configure(image=B_Button_Go)
+
+#Button Funcitons
+def SetUpVar():
+    global Var1
+    Var1 = int(0.0)
+    global VarOnOff
+    VarOnOff=0
+    global Play
+    Play=0
+    global OnOffStartButton
+    OnOffStartButton = 0
+
+SetUpVar()
+
+def AddUpScore():
+    global Var1
+    if VarOnOff == 1:
+        Var1 += 0.01
+    elif VarOnOff == -1:
+        Var1 -= 0.01
+    Bob = Decimal(Var1)
+    LabelScoreTest.configure(text=round(Bob ,ndigits=2))
+
+def TurnOnButtonGameReg():
+    global VarOnOff
+    LabelTest1.configure(image=B_Button_Reg)
+    # LabelTest1.bind("<ButtonPress>" ,func=CngButtonRegD)
+    # LabelTest1.bind("<ButtonRelease>" ,func=CngButtonReg)
+    VarOnOff = 1
+
+def TurnOnButtonGameInv():
+    global VarOnOff
+    LabelTest1.configure(image=B_Button_Inverse)
+    # LabelTest1.bind("<ButtonPress>" ,func=CngButtonInvD)
+    # LabelTest1.bind("<ButtonRelease>" ,func=CngButtonInv)
+    VarOnOff = -1
+
+def TurnOffButtonGameReg():
+    global VarOnOff
+    global Var1
+    LabelTest1.configure(image=B_Button_Empty)
+    # LabelTest1.unbind("<ButtonPress>")
+    # LabelTest1.unbind("<ButtonRelease>")
+    VarOnOff = 0
+    print(Var1)
+    Bob2 = Decimal(Var1)
+    LabelLastScore.configure(text=round(Bob2 ,ndigits=2))
+    Var1 = 0
+    Bob = Decimal(Var1)
+    LabelScoreTest.configure(text=round(Bob ,ndigits=2))
+
+def OnOffStartButtonFunc():
+    global OnOffStartButton
+    OnOffStartButton = 0
+
+def Button321Go():
+    global OnOffStartButton
+    if OnOffStartButton ==0:
+        global Var1
+        Var1=0
+        global VarOnOff
+        VarOnOff=0
+        global Play
+        Play=0
+        LabelTest1.configure(image=B_Button_3)
+        Button2func = Timer(interval=1 ,function=CngButton2)
+        Button1func = Timer(interval=2 ,function=CngButton1)
+        ButtonGofunc = Timer(interval=3 ,function=CngButtonGo)
+        TurnOnButton = Timer(interval=3.5 ,function=TurnOnButtonGameInv)
+        Button2func.start()
+        Button1func.start()
+        ButtonGofunc.start()
+        TurnOnButton.start()
+        x=0
+        Play=0
+        ListOfTimes = [3.5]
+
+        while Play < 15:
+            y = ListOfTimes[x] + RNG.randint(a=1,b=3) + RNG.randint(a=1,b=3)
+            ListOfTimes.append(y)
+            x+=1
+            if x%2 == 0:
+                Play = Play + ListOfTimes[x] - ListOfTimes[x-1]
+                PrintOnTest = Timer(interval=y,function=TurnOnButtonGameInv)
+                PrintOnTest.start()
+            else:
+                PrintOffTest = Timer(interval=y,function=TurnOnButtonGameReg)
+                PrintOffTest.start()
+        FTime = ListOfTimes[-1] + RNG.randint(a=1,b=3) + RNG.randint(a=1,b=3)
+        print(FTime)
+        GameFinished = Timer(interval = FTime ,function = TurnOffButtonGameReg)
+        GameFinished.start()
+        print(ListOfTimes)
+        print(Play)
+        OnOffStartButton = 1
+        OnOffButtonThing = Timer(interval=ListOfTimes[-1]+1 ,function=OnOffStartButtonFunc)
+        OnOffButtonThing.start()
+
+
+#making the main buttons and labels I am using
+LabelScoreTest = TPSK.Label(text = 0)
+LabelScoreTest.grid(column=0,row=0)
+
+LabelLastScore = TPSK.Label(text='no run yet')
+LabelLastScore.grid(column=2 ,row=0)
+
+LabelTest1 = TPSK.Button(image=B_Button_Empty ,command=AddUpScore ,repeatdelay=10 ,repeatinterval=10)
+LabelTest1.grid(column=0 ,row=1 ,columnspan=3)
+
+TurnOn = TPSK.Button(text="Start!" ,command=Button321Go ,padx=25 ,pady=25)
+TurnOn.grid(column=1 ,row=0)
+
+# TurnOff = TPSK.Button(text="turn off the picture" ,command=TurnOffLabelTest1 ,padx=25 ,pady=25)
+# TurnOff.grid(column=1 ,row=0)
+
+# ChangeButton = TPSK.Button(text="change Babe Fred" ,command=Button321Go ,padx=25 ,pady=25)
+# ChangeButton.grid(column=2 ,row=0)
+
+root.mainloop()
